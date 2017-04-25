@@ -1,0 +1,149 @@
+<div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a
+
+        href="https://github.com/larryprice/mongoose-simple-random"
+
+    >mongoose-simple-random (v0.4.1)</a>
+</h1>
+<h4>Simple and easy-to-use NodeJS Mongoose Schema plugin to pull random documents</h4>
+<div class="apidocSectionDiv"><a
+    href="#apidoc.tableOfContents"
+    id="apidoc.tableOfContents"
+><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.mongoose-simple-random">module mongoose-simple-random</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.mongoose-simple-random.mongoose-simple-random">
+            function <span class="apidocSignatureSpan"></span>mongoose-simple-random
+            <span class="apidocSignatureSpan">(schema)</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.mongoose-simple-random" id="apidoc.module.mongoose-simple-random">module mongoose-simple-random</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.mongoose-simple-random.mongoose-simple-random" id="apidoc.element.mongoose-simple-random.mongoose-simple-random">
+        function <span class="apidocSignatureSpan"></span>mongoose-simple-random
+        <span class="apidocSignatureSpan">(schema)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">mongoose-simple-random = function (schema) {
+  schema.statics.findRandom = function (conditions, fields, options, callback) {
+    var args = utils.checkParams(conditions, fields, options, callback),
+        _this = this;
+
+    return _this.count(args.conditions, function(err, count) {
+      var limit = 1,
+        populate = null;
+      if (err) {
+        return args.callback(err, undefined);
+      }
+      if (args.options.limit) {
+        limit = args.options.limit;
+        delete args.options.limit;
+      }
+      if (limit &#x3e; count) {
+        limit = count;
+      }
+      if (args.options.populate) {
+        populate = args.options.populate;
+        delete args.options.populate;
+      }
+      return utils.randomMap(count, limit, (item, next) =&#x3e; {
+        args.options.skip = item;
+        var find = _this.findOne(args.conditions, args.fields, args.options);
+        if (populate) {
+          find.populate(populate);
+        }
+        find.exec(next);
+      }, args.callback);
+    });
+  };
+
+  schema.statics.findOneRandom = function (conditions, fields, options, callback) {
+    var args = utils.checkParams(conditions, fields, options, callback);
+
+    args.options.limit = 1;
+    this.findRandom(args.conditions, args.fields, args.options, function(err, docs) {
+      if (docs &#x26;&#x26; docs.length === 1) {
+        return args.callback(err, docs[0]);
+      }
+
+      if (!err) {
+        err = &#x22;findOneRandom yielded no results.&#x22;;
+      }
+
+      return args.callback(err);
+    });
+  };
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
